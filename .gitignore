@@ -1,0 +1,25 @@
+.claude/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual envs
+.venv/
+.env
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+
+# Lockfiles (consumers regenerate against their local openarmature-python path)
+uv.lock
+
+# OS
+.DS_Store

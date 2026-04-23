@@ -1,0 +1,13 @@
+[project]
+name = "02-routing-and-subgraphs"
+version = "0.1.0"
+description = "openarmature demo: conditional routing + subgraph with custom projection"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=2.32.0",
+    "openarmature",
+    "pydantic>=2.7",
+]
+
+[tool.uv.sources]
+openarmature = { path = "../../openarmature-python", editable = true }
