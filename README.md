@@ -33,4 +33,4 @@ Both demos expect an OpenAI-compatible LLM endpoint at `http://localhost:8000/v1
 
 ## License
 
-MIT.
+Apache-2.0 — same as [openarmature-python](https://github.com/LunarCommand/openarmature-python). See [LICENSE](./LICENSE).
