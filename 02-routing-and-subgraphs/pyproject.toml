@@ -5,7 +5,7 @@ description = "openarmature demo: conditional routing + subgraph with custom pro
 requires-python = ">=3.12"
 dependencies = [
     "openai>=2.32.0",
-    "openarmature",
+    "openarmature>=0.3.0",
     "pydantic>=2.7",
 ]
 

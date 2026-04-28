@@ -1,7 +1,17 @@
 """openarmature demo: conditional routing + subgraph with a custom projection.
 
-This is the second demo in the series. It exists to exercise three graph
-features that `01-linear-pipeline/` didn't:
+**Use case:** A question-answering assistant. Classify the question, then
+either give a one-shot quick answer or run a multi-step research
+sub-pipeline (plan angles → gather notes → synthesize), then lightly
+copy-edit the result.
+
+**Demonstrates:** Conditional edges (state-driven routing) via
+`add_conditional_edge`, subgraph composition via `add_subgraph_node`, a
+custom `ProjectionStrategy` for the parent ↔ subgraph boundary, and the
+`merge` reducer for dict accumulation.
+
+This is the second demo in the series. It exercises three graph features
+that `01-linear-pipeline/` didn't:
 
   1. **Conditional edges.** The entry node classifies the question and the
      graph routes to one of two branches based on that classification.

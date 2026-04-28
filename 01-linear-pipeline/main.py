@@ -1,5 +1,11 @@
 """Minimal openarmature demo: 2-node graph (plan → write) driven by a local vLLM.
 
+**Use case:** Take a topic (e.g. "the psychology of long walks") and produce
+a short written piece — first plan a few angles, then write the article.
+
+**Demonstrates:** The minimal graph shape — typed `State`, the `append`
+reducer, static edges, `END`, a two-node linear `plan → write` pipeline.
+
 Run with:
     uv run python main.py "the psychology of long walks"
 """
