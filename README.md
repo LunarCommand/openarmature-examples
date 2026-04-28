@@ -4,10 +4,23 @@ Demo projects for [openarmature](https://github.com/LunarCommand/openarmature-py
 
 ## Projects
 
-| Directory | What it demonstrates |
-|---|---|
-| [`01-linear-pipeline/`](./01-linear-pipeline) | The minimal graph shape: typed `State`, per-field reducers (`append`), static edges, `END`. Runs a two-node `plan → write` pipeline. |
-| [`02-routing-and-subgraphs/`](./02-routing-and-subgraphs) | Conditional routing via `add_conditional_edge`, subgraph composition via `add_subgraph_node`, custom `ProjectionStrategy`, and the `merge` reducer. |
+### [`01-linear-pipeline/`](./01-linear-pipeline)
+
+**Use case:** Take a topic (e.g. "the psychology of long walks") and produce a short written piece — first plan a few angles, then write the article.
+
+**Demonstrates:** The minimal graph shape — typed `State`, the `append` reducer, static edges, `END`, a two-node linear `plan → write` pipeline.
+
+### [`02-routing-and-subgraphs/`](./02-routing-and-subgraphs)
+
+**Use case:** A question-answering assistant. Classify the question, then either give a one-shot quick answer or run a multi-step research sub-pipeline (plan angles → gather notes → synthesize), then lightly copy-edit the result.
+
+**Demonstrates:** Conditional edges (state-driven routing) via `add_conditional_edge`, subgraph composition via `add_subgraph_node`, a custom `ProjectionStrategy` for the parent ↔ subgraph boundary, and the `merge` reducer for dict accumulation.
+
+### [`03-explicit-subgraph-mapping/`](./03-explicit-subgraph-mapping)
+
+**Use case:** Compare two topics ("rust vs go", "espresso vs drip coffee") by running the same analysis subgraph on each, then synthesizing a verdict.
+
+**Demonstrates:** One compiled subgraph reused at two parent sites with per-site `ExplicitMapping` — the case spec v0.2 / proposal 0002 was written for, and the only way to express "run the same subgraph twice on disjoint parent fields" without per-site projection classes that mirror each other.
 
 ## Setup
 
