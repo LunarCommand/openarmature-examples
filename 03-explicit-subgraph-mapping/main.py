@@ -247,7 +247,7 @@ async def main() -> None:
     if len(args) >= 2:
         topic_a, topic_b = args[0], args[1]
     elif len(args) == 1 and " vs " in args[0].lower():
-        topic_a, _, topic_b = re.split(r" vs ", args[0], maxsplit=1, flags=re.IGNORECASE)
+        topic_a, topic_b = re.split(r" vs ", args[0], maxsplit=1, flags=re.IGNORECASE)
     else:
         topic_a, topic_b = "rust", "go"
 
