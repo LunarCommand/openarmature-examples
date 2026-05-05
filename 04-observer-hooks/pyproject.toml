@@ -1,0 +1,13 @@
+[project]
+name = "04-observer-hooks"
+version = "0.1.0"
+description = "openarmature demo: observer hooks for structured logging + per-call metrics"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=2.32.0",
+    "openarmature>=0.4.0",
+    "pydantic>=2.7",
+]
+
+[tool.uv.sources]
+openarmature = { path = "../../openarmature-python", editable = true }

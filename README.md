@@ -22,6 +22,12 @@ Demo projects for [openarmature](https://github.com/LunarCommand/openarmature-py
 
 **Demonstrates:** One compiled subgraph reused at two parent sites with per-site `ExplicitMapping` — the case spec v0.2 / proposal 0002 was written for, and the only way to express "run the same subgraph twice on disjoint parent fields" without per-site projection classes that mirror each other.
 
+### [`04-observer-hooks/`](./04-observer-hooks)
+
+**Use case:** Add observability to a small `draft → review → finalize` pipeline (where `review` is a subgraph) without changing any node code. A graph-attached console tracer prints structured node-boundary lines to stderr; an invocation-scoped metrics collector tallies counts for the current call.
+
+**Demonstrates:** Observer hooks (spec v0.3 / proposal 0003) — `attach_observer`, the `NodeEvent` shape, namespace chaining across the subgraph boundary, the `drain()` call required for short-lived processes, both function-shaped and class-shaped (`__call__`) observers, and how observers see structured pre/post state without nodes having to log anything themselves.
+
 ## Setup
 
 Each project depends on `openarmature` via an editable path dep to a sibling clone of the library:
