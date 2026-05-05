@@ -1,6 +1,6 @@
 """openarmature demo: observer hooks for structured logging + per-call metrics.
 
-**Use case:** Add observability to a small two-stage answer pipeline (an
+**Use case:** Add observability to a small three-stage answer pipeline (an
 outer `draft → review → finalize` flow where `review` is its own subgraph)
 without changing any node code. A graph-attached console tracer prints
 every node-boundary event to stderr; an invocation-scoped metrics
@@ -268,15 +268,20 @@ async def main() -> None:
     graph.attach_observer(console_tracer)
 
     metrics = InvocationMetrics()
-    final = await graph.invoke(
-        AnswerState(question=question),
-        observers=[metrics],
-    )
-    # Required for short-lived processes: invoke() returns when the graph
-    # reaches END regardless of whether the observer queue has finished.
-    # Without this drain, the last few [step=N] lines may never print
-    # before the process exits.
-    await graph.drain()
+    try:
+        final = await graph.invoke(
+            AnswerState(question=question),
+            observers=[metrics],
+        )
+    finally:
+        # Required for short-lived processes: invoke() returns when the
+        # graph reaches END regardless of whether the observer queue has
+        # finished. The try/finally also matters on the failure path —
+        # per spec v0.3 §6, the engine dispatches a failure event with
+        # `error` populated BEFORE propagating, and that event is exactly
+        # what a debugging user would want to see. Without `finally`, an
+        # invoke that raises would lose those late events.
+        await graph.drain()
 
     print()
     print(f"question: {final.question}")
