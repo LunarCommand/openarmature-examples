@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Least-privilege: the workflow only needs to read code (checkout examples
+# + checkout sibling openarmature-python). No writes anywhere.
+permissions:
+  contents: read
+
+# Cancel in-flight runs on the same ref when a new push lands.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Discover the example dirs on the PR branch dynamically so adding a new
+  # NN-foo/ directory in a future PR is picked up automatically — no need
+  # to edit the matrix here.
+  list-examples:
+    runs-on: ubuntu-latest
+    outputs:
+      examples: ${{ steps.list.outputs.examples }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: list
+        shell: bash
+        run: |
+          examples=$(ls -d [0-9][0-9]-*/ 2>/dev/null | sed 's,/$,,' | jq -R -s -c 'split("\n")[:-1]')
+          echo "examples=$examples" >> "$GITHUB_OUTPUT"
+
+  validate:
+    needs: list-examples
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example: ${{ fromJson(needs.list-examples.outputs.examples) }}
+    steps:
+      # Each example's pyproject.toml uses an editable path dep:
+      #   path = "../../openarmature-python"
+      # so we lay the two repos out as siblings under the workspace.
+      - name: Checkout examples
+        uses: actions/checkout@v4
+        with:
+          path: openarmature-examples
+
+      - name: Checkout openarmature-python sibling
+        uses: actions/checkout@v4
+        with:
+          repository: LunarCommand/openarmature-python
+          path: openarmature-python
+          # Conformance fixtures live in the openarmature-spec submodule,
+          # but the examples don't need them at runtime — still, recursive
+          # checkout is harmless and keeps `uv sync` honest about what it
+          # would resolve against on a developer machine.
+          submodules: recursive
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Install Python
+        run: uv python install 3.12
+
+      - name: Sync example deps
+        working-directory: openarmature-examples/${{ matrix.example }}
+        run: uv sync
+
+      # Building the graph exercises compile() — projection validation, the
+      # state schema, edge structure, etc. — without making any LLM calls
+      # (the LLM endpoint isn't reachable from CI). Sufficient as a smoke
+      # test that the example's openarmature usage is well-formed.
+      - name: Verify build_graph compiles
+        working-directory: openarmature-examples/${{ matrix.example }}
+        run: uv run python -c "from main import build_graph; build_graph()"
